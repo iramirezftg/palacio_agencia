@@ -316,7 +316,7 @@ function updateCalculator() {
 }
 
 function sendQuoteToWhatsApp() {
-  const phone = '526181234567';
+  const phone = '526183657151';
   let message = `¡Hola *Palacio Imagen & Publicidad*! 👋\n\n`;
   message += `Acabo de armar mi cotización en su sitio web para un evento en *Durango*:\n\n`;
   message += `📌 *Tipo de Evento:* ${calcState.eventType}\n`;
@@ -464,7 +464,7 @@ function initContactForm() {
     }
 
     setTimeout(() => {
-      const waUrl = `https://wa.me/526181234567?text=${encodeURIComponent(waText)}`;
+      const waUrl = `https://wa.me/526183657151?text=${encodeURIComponent(waText)}`;
       window.open(waUrl, '_blank');
       form.reset();
     }, 800);
@@ -495,7 +495,7 @@ function initFloatingWa() {
   presetButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const msg = btn.getAttribute('data-msg');
-      const waUrl = `https://wa.me/526181234567?text=${encodeURIComponent(msg)}`;
+      const waUrl = `https://wa.me/526183657151?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, '_blank');
       popover.classList.remove('show');
     });
