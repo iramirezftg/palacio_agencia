@@ -17,8 +17,12 @@ Sitio web oficial de **Palacio Imagen & Publicidad**, agencia líder en **Durang
 
 ## 💡 Características de la Plataforma
 
-- **Cotizador de Paquetes Hechos a la Medida:** Calculadora interactiva en tiempo real con selector de horas, personal y modalidad fiscal (con factura CFDI o precio neto directo).
-- **Integración con WhatsApp:** Generación automática de cotizaciones con mensajes preformateados.
+- **Cotizador de Paquetes Hechos a la Medida:** Calculadora interactiva en tiempo real con selector de zona geográfica (Local, Foráneo 1h, Foráneo 2h, Comarca Lagunera ~3-4h), horas de cobertura, personal y modalidad fiscal (con factura CFDI o precio neto directo).
+- **Modelo de Tarifas Transparente:**
+  - Edecanes: Tarifa fija de **$900 MXN** por bloque de 1 a 4 horas en eventos locales.
+  - Eventos Foráneos: A 1 hr ($1,100), a 2 hrs ($1,500) y La Laguna / Torreón 3-4 hrs ($2,000) por edecán (+ viáticos a cargo del cliente).
+  - Reserva y Apartado: **$500 MXN de anticipo** para clientes nuevos para asegurar fecha.
+- **Integración con WhatsApp:** Generación automática de cotizaciones con mensajes preformateados y desglose completo.
 - **Descarga e Impresión de Propuestas:** Generador de resúmenes formales para cotizaciones empresariales.
 - **Galería de Casos de Éxito:** Fotografías 100% reales de eventos en Durango (Pemex, Akron, Car Fest, Chevrolet, Sekurit Lubricantes, etc.).
 - **Diseño Responsivo:** Optimizado para dispositivos móviles, tablets y computadoras de escritorio.

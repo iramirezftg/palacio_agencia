@@ -202,16 +202,16 @@
             <span>Factura deducible SAT</span>
           </div>
           <div class="feature-item">
-            <span class="feat-icon">👔</span>
-            <span>Uniformes de alta costura</span>
+            <span class="feat-icon">🔒</span>
+            <span>Aparta con solo $500</span>
           </div>
           <div class="feature-item">
             <span class="feat-icon">💎</span>
-            <span>Personal A y AA</span>
+            <span>Edecanes A y AA</span>
           </div>
           <div class="feature-item">
             <span class="feat-icon">📍</span>
-            <span>Base en Durango</span>
+            <span>Durango y Foráneos</span>
           </div>
         </div>
       </div>
@@ -380,31 +380,75 @@
               </div>
             </div>
 
-            <!-- Step 2: Duration -->
+            <!-- Step 2: Location & Zone -->
             <div class="calc-step-group">
               <label class="step-label">
                 <span class="step-num">2</span>
+                <span>Ubicación y Cobertura del Evento</span>
+              </label>
+              <div class="zone-chips-grid" id="zoneContainer">
+                <button type="button" class="zone-chip-btn active" data-zone="local">
+                  <div class="zone-chip-title">
+                    <span>🏙️ Durango Capital</span>
+                  </div>
+                  <span class="zone-chip-desc">Zona urbana y metropolitana local</span>
+                  <span class="zone-chip-rate">Tarifa Base ($900 / edecán)</span>
+                </button>
+
+                <button type="button" class="zone-chip-btn" data-zone="foraneo-1h">
+                  <div class="zone-chip-title">
+                    <span>🚗 Foráneo ~1 hr</span>
+                  </div>
+                  <span class="zone-chip-desc">Canatlán, Nombre de Dios, Poanas, Pánuco</span>
+                  <span class="zone-chip-rate">$1,100 / edecán (+ viáticos)</span>
+                </button>
+
+                <button type="button" class="zone-chip-btn" data-zone="foraneo-2h">
+                  <div class="zone-chip-title">
+                    <span>🛣️ Foráneo ~2 hrs</span>
+                  </div>
+                  <span class="zone-chip-desc">Santiago Papasquiaro, Cuencamé, Vicente Guerrero</span>
+                  <span class="zone-chip-rate">$1,500 / edecán (+ viáticos)</span>
+                </button>
+
+                <button type="button" class="zone-chip-btn" data-zone="foraneo-laguna">
+                  <div class="zone-chip-title">
+                    <span>🌆 Comarca Lagunera (~3-4 hrs)</span>
+                  </div>
+                  <span class="zone-chip-desc">Torreón, Gómez Palacio, Cd. Lerdo</span>
+                  <span class="zone-chip-rate">$2,000 / edecán (+ viáticos)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Duration -->
+            <div class="calc-step-group">
+              <label class="step-label">
+                <span class="step-num">3</span>
                 <span>Duración Estimada del Servicio</span>
               </label>
               <div class="duration-slider-box">
                 <div class="range-header">
                   <span>Horas contratadas:</span>
-                  <span class="hours-display" id="hoursDisplay">4 Horas</span>
+                  <span class="hours-display" id="hoursDisplay">4 Horas (Bloque Base 1-4 hrs)</span>
                 </div>
-                <input type="range" id="hoursRange" min="2" max="10" step="1" value="4" class="custom-range" />
+                <input type="range" id="hoursRange" min="1" max="10" step="1" value="4" class="custom-range" />
                 <div class="range-labels">
-                  <span>2 hrs (Mínimo)</span>
-                  <span>4 hrs (Promedio)</span>
+                  <span>1 hr</span>
+                  <span>4 hrs (Bloque base)</span>
                   <span>8 hrs</span>
                   <span>10 hrs</span>
+                </div>
+                <div class="slider-helper-hint">
+                  💡 <strong>Tarifa por bloque de 1 a 4 horas:</strong> En edecanes es el mismo costo por 1, 2, 3 o 4 horas de servicio.
                 </div>
               </div>
             </div>
 
-            <!-- Step 3: Service Elements Selection -->
+            <!-- Step 4: Service Elements Selection -->
             <div class="calc-step-group">
               <label class="step-label">
-                <span class="step-num">3</span>
+                <span class="step-num">4</span>
                 <span>Selecciona el Personal y Servicios</span>
               </label>
 
@@ -413,7 +457,7 @@
                 <div class="service-counter-item">
                   <div class="service-info">
                     <strong>Edecanes (A / AA)</strong>
-                    <span>Atención a clientes, imagen de marca, pasarela y entrega de material promocional</span>
+                    <span>Tarifa local: $900 c/u por bloque de 1 a 4 hrs (foráneos desde $1,100 a $2,000)</span>
                   </div>
                   <div class="counter-control">
                     <button type="button" class="counter-btn" data-action="dec" data-target="edecanesCount" aria-label="Disminuir edecanes">-</button>
@@ -487,10 +531,10 @@
               </div>
             </div>
 
-            <!-- Step 4: Billing Option -->
+            <!-- Step 5: Billing Option -->
             <div class="calc-step-group">
               <label class="step-label">
-                <span class="step-num">4</span>
+                <span class="step-num">5</span>
                 <span>Modalidad Fiscal y Facturación</span>
               </label>
               <div class="billing-switch-container">
@@ -519,8 +563,11 @@
               <div class="summary-header">
                 <span class="summary-badge">Presupuesto Estimado</span>
                 <h3 class="summary-title" id="summaryEventTitle">Inauguración o Apertura</h3>
-                <span class="summary-city">📍 Durango, Dgo.</span>
+                <span class="summary-city" id="summaryCityLabel">📍 Durango, Dgo. (Local)</span>
               </div>
+
+              <!-- Viaticos Alert (foráneo) -->
+              <div class="viaticos-alert" id="viaticosAlert"></div>
 
               <!-- Breakdown list -->
               <div class="breakdown-list" id="breakdownList">
@@ -540,6 +587,15 @@
                 </div>
                 <div class="tax-note" id="taxNote">Precio neto estimado sin factura</div>
                 <div class="discount-badge" id="bundleDiscount">⚡ Descuento por Paquete Multidisciplinario Aplicado</div>
+              </div>
+
+              <!-- Anticipo Banner -->
+              <div class="anticipo-banner">
+                <span class="anticipo-icon">🔒</span>
+                <div>
+                  <strong>Aparta con solo $500 MXN</strong>
+                  <span>Anticipo para asegurar fecha (especial para clientes nuevos). Saldo al iniciar el evento.</span>
+                </div>
               </div>
 
               <!-- CTA Actions -->
@@ -587,11 +643,22 @@
             <p class="service-text">
               Presencia de alto perfil para congresos, inauguraciones de sucursales, exposiciones de negocios, activaciones y ferias. Personal extrovertido, con excelente dicción y actitud orientada al cliente.
             </p>
+            <div class="service-pricing-pill-box">
+              <div class="pricing-pill-item">
+                <span class="pill-label">Tarifa Local (Durango):</span>
+                <span class="pill-val">$900 <span>/ edecán (1 a 4 hrs)</span></span>
+              </div>
+              <div class="pricing-pill-item">
+                <span class="pill-label">Foráneos (~1h a 4h Torreón):</span>
+                <span class="pill-val">$1,100 - $2,000 <span>(+ viáticos)</span></span>
+              </div>
+            </div>
             <ul class="service-checklist">
+              <li>✓ Tarifa por bloque de 1 a 4 horas (mismo costo por 1, 2, 3 o 4 hrs)</li>
+              <li>✓ Cobertura en Durango, Canatlán, Santiago y Torreón</li>
               <li>✓ Clasificación A y AA según el perfil requerido</li>
-              <li>✓ Presentación del producto, degustaciones y folletería</li>
               <li>✓ Uniformes ejecutivos o temáticos incluidos</li>
-              <li>✓ Coordinador de asistencia y puntualidad</li>
+              <li>✓ Aparta la fecha con solo $500 de anticipo</li>
             </ul>
             <div class="service-footer">
               <a href="#cotizador" class="service-link">Configurar en Cotizador →</a>
@@ -740,14 +807,15 @@
             <p class="pkg-desc">Ideal para nuevos locales, tiendas departamentales, restaurantes y sucursales.</p>
           </div>
           <div class="pkg-price-box">
-            <div class="pkg-price">$3,490 <span>/ evento</span></div>
-            <span class="pkg-tag">3 Horas de Servicio</span>
+            <div class="pkg-price">$3,290 <span>/ evento local</span></div>
+            <span class="pkg-tag">3 Horas • Aparta con solo $500</span>
           </div>
           <ul class="pkg-features">
-            <li>✓ 2 Edecanes A con uniforme corporativo</li>
+            <li>✓ 2 Edecanes A/AA (bloque hasta 4 hrs incluido)</li>
             <li>✓ 1 Animador profesional con dinámicas de apertura</li>
             <li>✓ Atención y entrega de regalos/cupones a clientes</li>
             <li>✓ Coordinación y puntualidad asegurada</li>
+            <li>✓ Aparta tu fecha con solo $500 de anticipo</li>
             <li>✓ Con o sin factura fiscal disponible</li>
           </ul>
           <div class="pkg-btn-wrap">
@@ -766,14 +834,15 @@
             <p class="pkg-desc">Para convenciones, conferencias, ferias y lanzamientos de producto corporativo.</p>
           </div>
           <div class="pkg-price-box">
-            <div class="pkg-price">$5,890 <span>/ evento</span></div>
-            <span class="pkg-tag">5 Horas de Servicio</span>
+            <div class="pkg-price">$5,890 <span>/ evento local</span></div>
+            <span class="pkg-tag">5 Horas • Aparta con solo $500</span>
           </div>
           <ul class="pkg-features">
             <li>✓ 2 Hostess de recepción y protocolo en mesa VIP</li>
-            <li>✓ 2 Edecanes AA con vestidos de alta costura</li>
+            <li>✓ 2 Edecanes AA con uniformes / vestidos de gala</li>
             <li>✓ Registro digital o de gafetes para asistentes</li>
-            <li>✓ Asistencia a ponentes y entrega de reconocimientos</li>
+            <li>✓ Asistencia a ponentes y reconocimientos</li>
+            <li>✓ Aparta tu fecha con solo $500 de anticipo</li>
             <li>✓ Factura CFDI deducible al instante</li>
           </ul>
           <div class="pkg-btn-wrap">
@@ -791,14 +860,15 @@
             <p class="pkg-desc">Para aniversarios, galas, bodas, posadas empresariales y festivales.</p>
           </div>
           <div class="pkg-price-box">
-            <div class="pkg-price">$4,950 <span>/ evento</span></div>
-            <span class="pkg-tag">3 Horas de Show</span>
+            <div class="pkg-price">$4,950 <span>/ evento local</span></div>
+            <span class="pkg-tag">3 Horas Show • Aparta con $500</span>
           </div>
           <ul class="pkg-features">
             <li>✓ 2 Zanqueros monumentales con vestuario LED/Plumas</li>
             <li>✓ 1 Animador de fiesta para encender la pista</li>
             <li>✓ Sesión de fotos interactiva con invitados</li>
             <li>✓ Bienvenida memorable en recepción</li>
+            <li>✓ Aparta tu fecha con solo $500 de anticipo</li>
             <li>✓ Factura fiscal o precio neto</li>
           </ul>
           <div class="pkg-btn-wrap">
@@ -816,14 +886,15 @@
             <p class="pkg-desc">Solución completa y personalizada llave en mano con todo nuestro equipo.</p>
           </div>
           <div class="pkg-price-box">
-            <div class="pkg-price">$8,900 <span>/ evento</span></div>
-            <span class="pkg-tag">6 Horas Full Service</span>
+            <div class="pkg-price">$8,900 <span>/ evento local</span></div>
+            <span class="pkg-tag">6 Horas Full • Aparta con $500</span>
           </div>
           <ul class="pkg-features">
             <li>✓ 2 Edecanes AA ejecutivas + 2 Hostess de recepción</li>
             <li>✓ 2 Zanqueros temáticos con iluminación</li>
             <li>✓ 1 Maestro de ceremonias / Animador estelar</li>
             <li>✓ Cobertura fotográfica profesional del evento</li>
+            <li>✓ Aparta tu fecha con solo $500 de anticipo</li>
             <li>✓ Coordinador general en sitio para logística</li>
           </ul>
           <div class="pkg-btn-wrap">
@@ -1212,21 +1283,31 @@
 
         <div class="faq-item">
           <button class="faq-question" type="button">
-            <span>¿Tienen cobertura fuera de la ciudad de Durango?</span>
+            <span>¿Las edecanes se cobran por hora o por evento?</span>
             <span class="faq-toggle-icon">+</span>
           </button>
           <div class="faq-answer">
-            <p>Sí, cubrimos toda la Comarca Lagunera (Gómez Palacio, Lerdo, Torreón), así como municipios del interior del estado de Durango y estados vecinos (Zacatecas, Mazatlán, etc.), cotizando viáticos justos y transparentes.</p>
+            <p>En Palacio Imagen no manejamos cobro por hora suelta en edecanes; contamos con una <strong>tarifa fija de $900 MXN por edecán para evento local en un bloque de 1 a 4 horas</strong>. El costo es exactamente el mismo si tu contratación es por 1, 2, 3 o 4 horas. Para eventos que requieran más de 4 horas, se cotizan horas extras proporcionales.</p>
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" type="button">
-            <span>¿Cómo se realiza el pago del servicio?</span>
+            <span>¿Tienen cobertura fuera de Durango y cómo se cotizan los foráneos?</span>
             <span class="faq-toggle-icon">+</span>
           </button>
           <div class="faq-answer">
-            <p>Se aparta la fecha con un anticipo del 50% mediante transferencia bancaria, depósito o efectivo, y el 50% restante se liquida el día del evento al inicio del servicio con el coordinador.</p>
+            <p>Sí, atendemos municipios de Durango y la Comarca Lagunera hasta Torreón. Las tarifas por edecán en bloque de hasta 4 horas son: <strong>a 1 hora de camino (Canatlán, Nombre de Dios, Poanas) $1,100</strong>; <strong>a 2 horas (Santiago Papasquiaro, Cuencamé) $1,500</strong>; y <strong>a 3-4 horas (Gómez Palacio, Lerdo, Torreón) $2,000</strong>. En eventos foráneos, los viáticos de transporte, alimentos y hospedaje (si el horario lo amerita) corren por cuenta del cliente.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            <span>¿Cómo se realiza el pago y cuánto se pide de anticipo?</span>
+            <span class="faq-toggle-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Para clientes nuevos y para asegurar formalmente tu fecha en nuestra agenda, solicitamos un <strong>anticipo accesible de solo $500 MXN</strong>. El saldo restante se liquida el día del evento al inicio del servicio con el coordinador (vía transferencia bancaria o efectivo).</p>
           </div>
         </div>
 

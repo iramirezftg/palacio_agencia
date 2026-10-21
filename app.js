@@ -64,7 +64,6 @@ function initMobileNav() {
    2. INTERACTIVE PACKAGE CALCULATOR
    =================================================================== */
 const BASE_RATES = {
-  edecanPerHour: 450,       // Tarifa unitaria por edecán por hora
   hostessPerHour: 400,      // Tarifa unitaria por hostess por hora
   animadorPerHour: 600,     // Tarifa unitaria animador por hora
   zanqueroPerUnit: 1200,    // Tarifa por zanquero por bloque/show
@@ -72,8 +71,54 @@ const BASE_RATES = {
   uniformesFlatRate: 350    // Cargo de coordinación de uniformes exclusivos
 };
 
+// Configuración de Zonas de Cobertura y Tarifas de Edecanes
+// Regla de Negocio: Las edecanes se manejan en bloque de 1 a 4 horas (mismo costo de 1 a 4 hrs)
+const ZONE_CONFIG = {
+  'local': {
+    id: 'local',
+    name: 'Durango Capital (Local)',
+    shortName: 'Local Durango',
+    edecanBase: 900,         // $900 por edecán en bloque de 1 a 4 horas
+    extraHourRate: 225,      // $900 / 4 = $225 por hora extra
+    cityLabel: '📍 Durango, Dgo. (Local)',
+    viaticos: false,
+    viaticosDesc: null
+  },
+  'foraneo-1h': {
+    id: 'foraneo-1h',
+    name: 'Foráneo ~1 hr (Canatlán, Nombre de Dios, Poanas)',
+    shortName: 'Foráneo 1 hr',
+    edecanBase: 1100,        // $1,100 por edecán en bloque de 1 a 4 horas
+    extraHourRate: 275,
+    cityLabel: '📍 Foráneo Cercano (~1 hr de camino)',
+    viaticos: true,
+    viaticosDesc: '🚗 Nota de Viáticos: Transporte y alimentos del personal por cuenta del cliente.'
+  },
+  'foraneo-2h': {
+    id: 'foraneo-2h',
+    name: 'Foráneo ~2 hrs (Santiago Papasquiaro, Cuencamé, V. Guerrero)',
+    shortName: 'Foráneo 2 hrs',
+    edecanBase: 1500,        // $1,500 por edecán en bloque de 1 a 4 horas
+    extraHourRate: 375,
+    cityLabel: '📍 Foráneo Medio (~2 hrs de camino)',
+    viaticos: true,
+    viaticosDesc: '🚗 Nota de Viáticos: Transporte y alimentos del personal por cuenta del cliente.'
+  },
+  'foraneo-laguna': {
+    id: 'foraneo-laguna',
+    name: 'Comarca Lagunera (~3-4 hrs: Torreón, Gómez Palacio, Lerdo)',
+    shortName: 'La Laguna / Torreón',
+    edecanBase: 2000,        // $2,000 por edecán en bloque de 1 a 4 horas
+    extraHourRate: 500,
+    cityLabel: '📍 Torreón / Gómez Palacio / Lerdo (~3-4 hrs)',
+    viaticos: true,
+    viaticosDesc: '🚗 Nota de Viáticos: Transporte, alimentos y hospedaje (de ser necesario) por cuenta del cliente.'
+  }
+};
+
 let calcState = {
   eventType: 'Inauguración o Apertura',
+  zone: 'local',
   hours: 4,
   edecanes: 2,
   hostess: 1,
@@ -96,6 +141,17 @@ function initCalculator() {
     });
   });
 
+  // Zone Chips
+  const zoneButtons = document.querySelectorAll('#zoneContainer .zone-chip-btn');
+  zoneButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      zoneButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calcState.zone = btn.getAttribute('data-zone') || 'local';
+      updateCalculator();
+    });
+  });
+
   // Hours Slider
   const hoursRange = document.getElementById('hoursRange');
   const hoursDisplay = document.getElementById('hoursDisplay');
@@ -103,7 +159,11 @@ function initCalculator() {
     hoursRange.addEventListener('input', (e) => {
       const val = parseInt(e.target.value, 10);
       calcState.hours = val;
-      hoursDisplay.textContent = `${val} Hora${val > 1 ? 's' : ''}`;
+      if (val <= 4) {
+        hoursDisplay.textContent = `${val} Hora${val > 1 ? 's' : ''} (Bloque Base 1-4 hrs)`;
+      } else {
+        hoursDisplay.textContent = `${val} Horas (4 hrs + ${val - 4}h extra)`;
+      }
       updateCalculator();
     });
   }
@@ -186,24 +246,47 @@ function initCalculator() {
 
 function updateCalculator() {
   const summaryTitle = document.getElementById('summaryEventTitle');
+  const summaryCityEl = document.getElementById('summaryCityLabel');
+  const viaticosAlertEl = document.getElementById('viaticosAlert');
   const breakdownList = document.getElementById('breakdownList');
   const totalAmountEl = document.getElementById('totalAmount');
   const taxNote = document.getElementById('taxNote');
   const bundleDiscountEl = document.getElementById('bundleDiscount');
 
+  const currentZone = ZONE_CONFIG[calcState.zone] || ZONE_CONFIG['local'];
+
   if (summaryTitle) summaryTitle.textContent = calcState.eventType;
+  if (summaryCityEl) summaryCityEl.textContent = currentZone.cityLabel;
+
+  if (viaticosAlertEl) {
+    if (currentZone.viaticos) {
+      viaticosAlertEl.style.display = 'block';
+      viaticosAlertEl.textContent = currentZone.viaticosDesc;
+    } else {
+      viaticosAlertEl.style.display = 'none';
+    }
+  }
 
   // Compute breakdown costs
   let rawSubtotal = 0;
   let breakdownRows = [];
 
-  // Edecanes
+  // Edecanes: Cobro por bloque de 1 a 4 horas (mismo costo por 1 a 4 hrs)
   if (calcState.edecanes > 0) {
-    const cost = calcState.edecanes * BASE_RATES.edecanPerHour * calcState.hours;
-    rawSubtotal += cost;
+    let unitRate = currentZone.edecanBase;
+    let labelDetail = 'Bloque 1 a 4 hrs';
+
+    if (calcState.hours > 4) {
+      const extraHours = calcState.hours - 4;
+      unitRate += extraHours * currentZone.extraHourRate;
+      labelDetail = `4 hrs base + ${extraHours}h extra`;
+    }
+
+    const totalEdecanes = calcState.edecanes * unitRate;
+    rawSubtotal += totalEdecanes;
     breakdownRows.push({
-      label: `${calcState.edecanes} Edecán${calcState.edecanes > 1 ? 'es' : ''} (${calcState.hours} hrs)`,
-      amount: cost
+      label: `${calcState.edecanes} Edecán${calcState.edecanes > 1 ? 'es' : ''} A/AA (${labelDetail} • ${currentZone.shortName})`,
+      amount: totalEdecanes
     });
   }
 
@@ -317,21 +400,31 @@ function updateCalculator() {
 
 function sendQuoteToWhatsApp() {
   const phone = '526183657151';
+  const currentZone = ZONE_CONFIG[calcState.zone] || ZONE_CONFIG['local'];
+
   let message = `¡Hola *Palacio Imagen & Publicidad*! 👋\n\n`;
-  message += `Acabo de armar mi cotización en su sitio web para un evento en *Durango*:\n\n`;
+  message += `Acabo de armar mi cotización en su sitio web para un evento:\n\n`;
   message += `📌 *Tipo de Evento:* ${calcState.eventType}\n`;
-  message += `⏱️ *Duración:* ${calcState.hours} Horas\n\n`;
+  message += `📍 *Ubicación / Zona:* ${currentZone.name}\n`;
+  message += `⏱️ *Duración:* ${calcState.hours} Horas ${calcState.hours <= 4 ? '(Bloque base 1 a 4 hrs)' : ''}\n\n`;
   message += `📋 *Servicios Seleccionados:*\n`;
 
-  if (calcState.edecanes > 0) message += `• ${calcState.edecanes} Edecán(es) A/AA\n`;
+  if (calcState.edecanes > 0) {
+    message += `• ${calcState.edecanes} Edecán(es) A/AA (${calcState.hours <= 4 ? 'Bloque base hasta 4 hrs' : calcState.hours + ' hrs'})\n`;
+  }
   if (calcState.hostess > 0) message += `• ${calcState.hostess} Hostess de Recepción\n`;
   if (calcState.zanqueros > 0) message += `• ${calcState.zanqueros} Zanquero(s) Show/LED\n`;
   if (calcState.animador > 0) message += `• ${calcState.animador} Animador / MC Profesional\n`;
   if (calcState.hasFoto) message += `• Cobertura Fotográfica y Digital\n`;
-  if (calcState.hasUniformes) message += `• Uniformes Profesionales de Alta Calidad\n`;
+  if (calcState.hasUniformes) message += `• Uniformes Profesionales de Alta Costura\n`;
+
+  if (currentZone.viaticos) {
+    message += `\n🚗 *Viáticos Foráneos:* Se contemplan transporte y alimentos por cuenta del cliente.\n`;
+  }
 
   message += `\n🧾 *Modalidad Fiscal:* ${calcState.withInvoice ? 'Con Factura CFDI (+IVA)' : 'Sin Factura (Precio Neto)'}\n`;
-  message += `💰 *Presupuesto Estimado:* $${calcState.calculatedTotal ? calcState.calculatedTotal.toLocaleString('es-MX') : '0'} MXN\n\n`;
+  message += `💰 *Presupuesto Estimado:* $${calcState.calculatedTotal ? calcState.calculatedTotal.toLocaleString('es-MX') : '0'} MXN\n`;
+  message += `🔒 *Anticipo para asegurar fecha:* $500 MXN (Clientes nuevos)\n\n`;
   message += `¿Tienen disponibilidad de fecha y personal para afinar los detalles? ¡Gracias!`;
 
   const encodedUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -521,10 +614,13 @@ function initPrintModal() {
       day: 'numeric'
     });
 
+    const currentZone = ZONE_CONFIG[calcState.zone] || ZONE_CONFIG['local'];
+
     let html = `
-      <p style="margin-bottom: 0.5rem;"><strong>Fecha de Cotización:</strong> ${today}</p>
-      <p style="margin-bottom: 0.5rem;"><strong>Tipo de Evento:</strong> ${calcState.eventType}</p>
-      <p style="margin-bottom: 1.25rem;"><strong>Duración de Cobertura:</strong> ${calcState.hours} Horas de Servicio en Durango, Dgo.</p>
+      <p style="margin-bottom: 0.4rem;"><strong>Fecha de Cotización:</strong> ${today}</p>
+      <p style="margin-bottom: 0.4rem;"><strong>Tipo de Evento:</strong> ${calcState.eventType}</p>
+      <p style="margin-bottom: 0.4rem;"><strong>Ubicación / Cobertura:</strong> ${currentZone.name}</p>
+      <p style="margin-bottom: 1.25rem;"><strong>Duración de Cobertura:</strong> ${calcState.hours} Horas de Servicio ${calcState.hours <= 4 ? '(Bloque base de 1 a 4 horas)' : ''}</p>
       
       <table class="print-summary-table">
         <thead>
@@ -573,11 +669,12 @@ function initPrintModal() {
       </div>
 
       <div style="margin-top: 1.5rem; font-size: 0.8rem; color: #64748b; line-height: 1.5;">
-        <strong>Términos del Servicio:</strong><br>
-        • Incluye personal uniformado con estándares ejecutivos de alta costura.<br>
-        • Incluye coordinador de campo 30 minutos antes para inicio puntual del evento.<br>
-        • Para apartar fecha se requiere 50% de anticipo y 50% al iniciar el evento.<br>
-        • Cotización válida por 15 días naturales en Durango y zona metropolitana.
+        <strong>Términos del Servicio y Políticas de Reserva:</strong><br>
+        • <strong>Apartado de Fecha:</strong> Clientes nuevos aseguran formalmente su fecha con un anticipo accesible de <strong>$500 MXN</strong>; el saldo se liquida el día del evento al inicio del servicio.<br>
+        • <strong>Edecanes:</strong> Tarifa fija por bloque de 1 a 4 horas (mismo costo por 1, 2, 3 o 4 horas). Horas extras aplican tarifa adicional proporcional.<br>
+        • <strong>Eventos Foráneos:</strong> ${currentZone.viaticos ? 'Viáticos de transporte, alimentos y hospedaje (si aplica) son cubiertos por el cliente.' : 'Tarifa base local en área metropolitana de Durango.'}<br>
+        • Incluye personal uniformado con estándares ejecutivos y coordinador de campo 30 minutos antes para puntualidad asegurada.<br>
+        • Cotización válida por 15 días naturales.
       </div>
     `;
 
