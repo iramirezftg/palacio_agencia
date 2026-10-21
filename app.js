@@ -323,7 +323,7 @@ function sendQuoteToWhatsApp() {
   message += `⏱️ *Duración:* ${calcState.hours} Horas\n\n`;
   message += `📋 *Servicios Seleccionados:*\n`;
 
-  if (calcState.edecanes > 0) message += `• ${calcState.edecanes} Edecán(es) AA/AAA\n`;
+  if (calcState.edecanes > 0) message += `• ${calcState.edecanes} Edecán(es) A/AA\n`;
   if (calcState.hostess > 0) message += `• ${calcState.hostess} Hostess de Recepción\n`;
   if (calcState.zanqueros > 0) message += `• ${calcState.zanqueros} Zanquero(s) Show/LED\n`;
   if (calcState.animador > 0) message += `• ${calcState.animador} Animador / MC Profesional\n`;

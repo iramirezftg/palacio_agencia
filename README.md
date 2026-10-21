@@ -6,7 +6,7 @@ Sitio web oficial de **Palacio Imagen & Publicidad**, agencia líder en **Durang
 
 ## 🌟 Servicios Destacados
 
-- **Edecanes (A, AA, AAA):** Imagen corporativa, exposiciones, pasarelas, ferias comerciales y congresos.
+- **Edecanes (A, AA):** Imagen corporativa, exposiciones, activaciones, ferias comerciales y congresos.
 - **Hostess de Recepción VIP:** Etiqueta ejecutiva, registro digital, entrega de gafetes y protocolo.
 - **Zanqueros Espectaculares:** Shows visuales con trajes de gala, temáticos y luces LED.
 - **Animadores & Maestros de Ceremonias:** Locución profesional, dinámicas comerciales y eventos masivos.
